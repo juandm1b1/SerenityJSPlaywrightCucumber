@@ -1,0 +1,55 @@
+{
+  "name": "serenity-js-cucumber-playwright-template",
+  "version": "3.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "cucumber-js",
+    "test:report": "npx @serenity-js/html-reporter serve --dir ./reports/serenity-js --open",
+    "lint": "eslint --ext ts --config .eslintrc.js .",
+    "lint:fix": "npm run lint -- --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/serenity-js/serenity-js-cucumber-playwright-template.git"
+  },
+  "keywords": [
+    "serenity-js",
+    "bdd",
+    "cucumber",
+    "testing",
+    "playwright",
+    "playwright-test"
+  ],
+  "author": "Jan Molak <jan.molak@smartcodeltd.co.uk>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/serenity-js/serenity-js-cucumber-playwright-template/issues"
+  },
+  "homepage": "https://serenity-js.org",
+  "engines": {
+    "node": "^20 || ^22 || ^24"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^13.2.1",
+    "@serenity-js/assertions": "^3.45.8",
+    "@serenity-js/console-reporter": "^3.45.8",
+    "@serenity-js/core": "^3.45.8",
+    "@serenity-js/cucumber": "^3.45.8",
+    "@serenity-js/html-reporter": "^3.45.8",
+    "@serenity-js/playwright": "^3.45.8",
+    "@serenity-js/rest": "^3.45.8",
+    "@serenity-js/web": "^3.45.8",
+    "@typescript-eslint/eslint-plugin": "^8.67.0",
+    "@typescript-eslint/parser": "^8.67.0",
+    "eslint": "^9.39.5",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "eslint-plugin-unicorn": "^62.0.0",
+    "eslint-plugin-unused-imports": "^4.4.1",
+    "is-ci": "^4.1.0",
+    "playwright": "^1.62.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
