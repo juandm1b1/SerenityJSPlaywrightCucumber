@@ -32,16 +32,18 @@
   },
   "devDependencies": {
     "@cucumber/cucumber": "^13.2.1",
-    "@serenity-js/assertions": "^3.45.8",
-    "@serenity-js/console-reporter": "^3.45.8",
-    "@serenity-js/core": "^3.45.8",
-    "@serenity-js/cucumber": "^3.45.8",
-    "@serenity-js/html-reporter": "^3.45.8",
-    "@serenity-js/playwright": "^3.45.8",
-    "@serenity-js/rest": "^3.45.8",
-    "@serenity-js/web": "^3.45.8",
+    "@serenity-js/assertions": "^3.49.0",
+    "@serenity-js/console-reporter": "^3.49.0",
+    "@serenity-js/core": "^3.49.0",
+    "@serenity-js/cucumber": "^3.49.0",
+    "@serenity-js/html-reporter": "^3.49.0",
+    "@serenity-js/playwright": "^3.49.0",
+    "@serenity-js/rest": "^3.49.0",
+    "@serenity-js/web": "^3.49.0",
     "@typescript-eslint/eslint-plugin": "^8.67.0",
     "@typescript-eslint/parser": "^8.67.0",
+    "allure-commandline": "^2.46.1",
+    "allure-cucumberjs": "^3.14.0",
     "eslint": "^9.39.5",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
@@ -51,5 +53,8 @@
     "playwright": "^1.62.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
+  },
+  "overrides": {
+    "playwright-core": "1.64.0"
   }
 }

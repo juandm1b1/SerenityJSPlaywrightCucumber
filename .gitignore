@@ -1,10 +1,51 @@
-# IntelliJ
-.idea
-
-# Node
-node_modules
+# ==========================================
+# Node.js & Dependencies
+# ==========================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 *.log
 
-# Build artifacts
-reports
-target
+# ==========================================
+# Environment Variables (Secrets & Local Config)
+# ==========================================
+.env
+.env.local
+.env.*.local
+
+# ==========================================
+# Test Artifacts (Generated on execution)
+# ==========================================
+
+# Allure Reports
+allure-results/
+allure-report/
+
+# Serenity/JS HTML Reports
+reports/
+
+# Playwright Video Recordings
+videos/
+
+# TypeScript Build Output (if used)
+dist/
+target/
+
+# ==========================================
+# IDEs and Editors
+# ==========================================
+# IntelliJ / WebStorm
+.idea/
+
+# VS Code (optional, depends on if you share team settings)
+.vscode/
+# If you want to share VS Code extension recommendations, 
+# comment the line above and uncomment the line below:
+# !.vscode/extensions.json
+
+# Mac OS
+.DS_Store
+
+# Windows
+Thumbs.db

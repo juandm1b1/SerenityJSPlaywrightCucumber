@@ -20,14 +20,16 @@ const timeouts = {
 
 let browser: playwright.Browser;
 
-// Configure default Cucumber step timeout
+// Default Cucumber step timeout configuration. This is how long Cucumber will wait for a step to complete before timing out and failing the test.
 setDefaultTimeout(timeouts.cucumber.step.inMilliseconds());
 
 BeforeAll(async () => {
     // Launch the browser once before all the tests
     // Serenity/JS will take care of managing Playwright browser context and browser tabs.
     browser = await playwright.chromium.launch({
-        headless: process.env.HEADLESS !== 'false',
+        // headless: process.env.HEADLESS !== 'false', // Uncomment this line to run the browser in headless mode (without a visible UI)
+        headless: false, // Browser would be visible during the test execution
+        slowMo: 100, // Slow down the execution by 100ms to make it easier to observe
     });
 
     // Configure Serenity/JS
@@ -36,8 +38,12 @@ BeforeAll(async () => {
         // Configure Serenity/JS actors to use Playwright browser
         actors: new Actors(
             browser,
-            {
-                baseURL: 'https://the-internet.herokuapp.com/',
+            {                
+                baseURL: 'https://www.saucedemo.com/',
+                recordVideo: {
+                    dir: './videos', // Directory where the video files will be saved
+                    size: { width: 1280, height: 720 }, // Set the desired video resolution
+            },
             },
             {
                 defaultNavigationTimeout: timeouts.playwright.defaultNavigationTimeout.inMilliseconds(),
@@ -49,11 +55,14 @@ BeforeAll(async () => {
         crew: [
             [ '@serenity-js/console-reporter', { theme: 'auto' } ],
             [ '@serenity-js/web:Photographer', {
-                // strategy: 'TakePhotosOfInteractions',    // capture screenshots of all the interactions; slower but more comprehensive
-                strategy: 'TakePhotosOfFailures',           // capture screenshots of failed interactions; much faster
+                strategy: 'TakePhotosOfInteractions',    // capture screenshots of all the interactions; slower but more comprehensive
+                //strategy: 'TakePhotosOfFailures',           // capture screenshots of failed interactions; much faster
             } ],
-            [ '@serenity-js/html-reporter', { specDirectory: path.resolve(__dirname, '../../features') } ],
-        ],
+            [ '@serenity-js/core:ArtifactArchiver', {
+                outputDirectory: 'allure-results', // Directory where the Allure results will be saved, it must match Allure resultsDir
+            } ],
+            // [ '@serenity-js/html-reporter', { specDirectory: path.resolve(__dirname, '../../features') } ],
+        ],        
 
         cueTimeout: timeouts.serenity.cueTimeout,
     });

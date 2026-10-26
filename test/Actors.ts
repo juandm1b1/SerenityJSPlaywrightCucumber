@@ -8,8 +8,7 @@ export class Actors implements Cast {
         private readonly browser: playwright.Browser,
         private readonly browserContextOptions: playwright.BrowserContextOptions,
         private readonly extraBrowserContextOptions: ExtraBrowserContextOptions,
-    ) {
-    }
+    ) {}
 
     prepare(actor: Actor): Actor {
         return actor.whoCan(

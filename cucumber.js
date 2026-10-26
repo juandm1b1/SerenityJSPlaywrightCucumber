@@ -6,10 +6,12 @@
  */
 module.exports = {
     default: [
-        `--require-module 'ts-node/register'`,              // use TypeScript in-memory transpiler, ts-node
-        `--format "@serenity-js/cucumber"`,                 // use Serenity/JS Cucumber adapter - https://serenity-js.org/modules/cucumber/
-        `--format-options '{"specDirectory": "features"}'`, // configure the adapter
-        `--require "./features/**/*.steps.ts"`,             // load step definition libraries
-        `--require './features/**/*.config.ts'`              // load configuration files, such as features/support/
+        `--require-module 'ts-node/register'`,                 // use TypeScript in-memory transpiler, ts-node
+        `--format "@serenity-js/cucumber"`,                    // Serenity/JS reporter
+        `--format "allure-cucumberjs/reporter"`,               // Allure reporter
+        `--format-options '{"resultsDir": "allure-results"}'`, // configure Allure results directory
+        `--require "./features/**/*.steps.ts"`,                // load step definition libraries
+        `--require './features/**/*.config.ts'`,               // load configuration files, such as features/support/
+        `--require './features/support/hooks.ts'`              // load hooks, such as before/after scenario
     ].join(' ')
 };
