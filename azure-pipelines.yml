@@ -1,0 +1,103 @@
+# azure-pipelines.yml
+# Pipeline de CI/CD para el proyecto Serenity/JS + Cucumber + Playwright + Allure
+
+trigger:
+  - main # Se ejecuta automáticamente al hacer push a la rama principal
+
+pool:
+  vmImage: 'ubuntu-latest' # Agente de Azure DevOps basado en Linux
+
+variables:
+  - name: NODE_VERSION
+    value: '18.x'
+  - name: PLAYWRIGHT_BROWSER
+    value: 'chromium' # El repo usa solo chromium, optimizando el tiempo de instalación
+
+steps:
+  # ---------------------------------------------------------------------------
+  # 1. Preparación del entorno
+  # ---------------------------------------------------------------------------
+  - task: NodeTool@0
+    displayName: 'Instalar Node.js $(NODE_VERSION)'
+    inputs:
+      versionSpec: $(NODE_VERSION)
+      checkLatest: true
+
+  - task: JavaToolInstaller@0
+    displayName: 'Instalar Java 17 (requerido por Allure)'
+    inputs:
+      versionSpec: '17'
+      jdkArchitectureOption: 'x64'
+      jdkSourceOption: 'PreInstalled' # Suele estar disponible en agentes de Azure
+
+  # ---------------------------------------------------------------------------
+  # 2. Instalación de dependencias y navegadores
+  # ---------------------------------------------------------------------------
+  - script: npm ci
+    displayName: 'Instalar dependencias (npm ci)'
+    # npm ci es ideal para CI/CD: instalación limpia y reproducible
+
+  - script: npx playwright install --with-deps $(PLAYWRIGHT_BROWSER)
+    displayName: 'Instalar navegador Playwright y dependencias del sistema'
+    # --with-deps instala las librerías de sistema necesarias en el agente Linux
+
+  # ---------------------------------------------------------------------------
+  # 3. Ejecución de las pruebas
+  # ---------------------------------------------------------------------------
+  - script: |
+      npx cucumber-js --format junit:junit-results.xml --format allure-cucumberjs/reporter
+    displayName: 'Ejecutar pruebas (Cucumber.js)'
+    continueOnError: true # Permite que el pipeline continúe para publicar reportes aunque fallen tests
+    # El primer --format genera un XML JUnit para Azure DevOps
+    # El segundo --format genera los archivos JSON de Allure en 'allure-results' (configurado en cucumber.js)
+    # Alternativa: si tienes un script npm, puedes usar: npm test
+
+  # ---------------------------------------------------------------------------
+  # 4. Publicación de resultados en Azure DevOps (pestaña "Tests")
+  # ---------------------------------------------------------------------------
+  - task: PublishTestResults@2
+    displayName: 'Publicar resultados de pruebas (JUnit)'
+    condition: succeededOrFailed() # Se ejecuta incluso si las pruebas fallan
+    inputs:
+      testResultsFormat: 'JUnit'
+      testResultsFiles: '**/junit-results.xml'
+      mergeTestResults: true
+      failTaskOnFailedTests: false # El pipeline no falla aquí; el fallo se refleja en el step de ejecución
+
+  # ---------------------------------------------------------------------------
+  # 5. Generación y publicación del reporte de Allure
+  # ---------------------------------------------------------------------------
+  # Opción A (Recomendada): Usar la extensión "Allure Report" para Azure DevOps
+  # Requiere instalar la extensión desde el Marketplace en la organización.
+  - task: PublishAllureReport@2
+    displayName: 'Publicar reporte de Allure (extensión)'
+    condition: succeededOrFailed()
+    inputs:
+      testResultsDir: 'allure-results' # Carpeta generada por el reporter de Allure
+      # reportName: 'Allure Report' # Opcional
+      # allureVersion: '2.29.0' # Opcional, fija la versión de Allure
+
+  # Opción B (Fallback): Publicar el reporte HTML como artefacto del pipeline
+  # Si no se desea instalar la extensión, se puede generar el HTML y adjuntarlo.
+  # Descomentar si se prefiere esta vía.
+  # - script: |
+  #     npx allure generate allure-results --clean -o allure-report
+  #   displayName: 'Generar reporte HTML de Allure'
+  #   condition: succeededOrFailed()
+  #
+  # - task: PublishPipelineArtifact@1
+  #   displayName: 'Publicar artefacto: reporte Allure HTML'
+  #   condition: succeededOrFailed()
+  #   inputs:
+  #     targetPath: 'allure-report'
+  #     artifact: 'allure-report'
+
+  # ---------------------------------------------------------------------------
+  # 6. (Opcional) Publicar trazas/videos generados por Playwright
+  # ---------------------------------------------------------------------------
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publicar artefactos de evidencia (videos/trazas)'
+    condition: succeededOrFailed()
+    inputs:
+      targetPath: 'videos' # Carpeta mencionada en el README del repo
+      artifact: 'evidencias-playwright'
